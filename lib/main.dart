@@ -221,7 +221,7 @@ class _MyAppState extends State<MyApp> {
             _buildToolbarButton(
               icon: Icons.switch_camera,
               onPressed: _cameraOff ? () {} : _onSwitchCamera,
-              color: _cameraOff ? Colors.grey : Colors.black,
+              color: _cameraOff ? Colors.grey : Colors.blue,
               iconColor: Colors.white,
             ),
             const SizedBox(width: 10),
