@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.6
   agora_rtc_engine: ^6.3.2
   permission_handler: ^11.3.1
+  flutter_bloc: ^8.1.4
+  equatable: ^2.0.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
