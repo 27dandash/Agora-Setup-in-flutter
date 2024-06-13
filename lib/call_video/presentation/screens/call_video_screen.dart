@@ -1,5 +1,5 @@
 import 'package:try_agora/call_video/call_video_imports.dart';
-import 'package:try_agora/call_video/presentation/components/call_video_action.dart';
+
 
 class CallVideoScreen extends StatelessWidget {
   const CallVideoScreen({super.key});
@@ -29,7 +29,7 @@ class CallVideoScreen extends StatelessWidget {
                             height: 180,
                             child: Center(
                               child: cubit.localUserJoined
-                                  ? cubit.localVideo()
+                                  ? const LocalVideoWidget()
                                   : const CircularProgressIndicator(),
                             ),
                           ),

@@ -1,10 +1,4 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:try_agora/call_video/presentation/components/call_ended.dart';
-import 'package:try_agora/call_video/presentation/controller/call_video_state.dart'; // Import the state file
+import 'package:try_agora/call_video/call_video_imports.dart';
 
 class CallVideoCubit extends Cubit<CallVideoState> {
   CallVideoCubit() : super(InitialCallVideoState());
@@ -20,7 +14,7 @@ class CallVideoCubit extends Cubit<CallVideoState> {
   bool cameraOff = false;
   bool isFrontCamera = true;
   bool _remoteCameraOff = false;
-  late RtcEngine _engine;
+  late RtcEngine engine;
 
   void initCallVideoData() {
     initAgora();
@@ -32,13 +26,13 @@ class CallVideoCubit extends Cubit<CallVideoState> {
 
   Future<void> initAgora() async {
     await [Permission.microphone, Permission.camera].request();
-    _engine = createAgoraRtcEngine();
-    await _engine.initialize(RtcEngineContext(
+    engine = createAgoraRtcEngine();
+    await engine.initialize(RtcEngineContext(
       appId: appId,
       channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
     ));
 
-    _engine.registerEventHandler(
+    engine.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("local user ${connection.localUid} joined");
@@ -87,11 +81,11 @@ class CallVideoCubit extends Cubit<CallVideoState> {
       ),
     );
 
-    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-    await _engine.enableVideo();
-    await _engine.startPreview();
+    await engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await engine.enableVideo();
+    await engine.startPreview();
 
-    await _engine.joinChannel(
+    await engine.joinChannel(
       token: token,
       channelId: channel,
       uid: 0,
@@ -99,23 +93,22 @@ class CallVideoCubit extends Cubit<CallVideoState> {
     );
   }
 
-
   void onToggleMute() {
     emit(InitialToggleMuteState());
     muted = !muted;
     emit(SuccessToggleMuteState());
-    _engine.muteLocalAudioStream(muted);
+    engine.muteLocalAudioStream(muted);
   }
 
   void openCloseCamera() {
     emit(InitialToggleCameraState());
     cameraOff = !cameraOff;
     emit(SuccessToggleCameraState());
-    _engine.muteLocalVideoStream(cameraOff);
+    engine.muteLocalVideoStream(cameraOff);
   }
 
   void onToggleCamera() {
-    _engine.switchCamera();
+    engine.switchCamera();
     emit(InitialSwitchCameraState());
     isFrontCamera = !isFrontCamera;
     emit(SuccessSwitchCameraState());
@@ -123,8 +116,8 @@ class CallVideoCubit extends Cubit<CallVideoState> {
 
   void onCallEnd(BuildContext context) async {
     emit(InitialCallEndState());
-    await _engine.leaveChannel();
-    await _engine.release();
+    await engine.leaveChannel();
+    await engine.release();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const CallEnded()),
@@ -132,34 +125,6 @@ class CallVideoCubit extends Cubit<CallVideoState> {
     emit(SuccessCallEndState());
   }
 
-  Widget localVideo() {
-    if (cameraOff) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.black, borderRadius: BorderRadius.circular(15)),
-          child: const Center(
-            child: Icon(
-              Icons.videocam_off,
-              color: Colors.white,
-              size: 40.0,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-        child: AgoraVideoView(
-          controller: VideoViewController(
-            rtcEngine: _engine,
-            canvas: const VideoCanvas(uid: 0),
-          ),
-        ),
-      );
-    }
-  }
 
   Widget remoteVideo() {
     if (_remoteUid != null) {
@@ -171,7 +136,7 @@ class CallVideoCubit extends Cubit<CallVideoState> {
       } else {
         return AgoraVideoView(
           controller: VideoViewController.remote(
-            rtcEngine: _engine,
+            rtcEngine: engine,
             canvas: VideoCanvas(uid: _remoteUid),
             connection: RtcConnection(channelId: channel),
           ),

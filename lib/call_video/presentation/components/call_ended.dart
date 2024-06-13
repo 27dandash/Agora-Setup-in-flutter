@@ -7,7 +7,7 @@ class CallEnded extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rate Your Experiance With Agora'),
+        title: const Text('Rate Your Experience With Agora'),
       ),
       body:  Material(
         child: Container(
@@ -28,7 +28,7 @@ class CallEnded extends StatelessWidget {
               tileMode: TileMode.mirror,
             ),
           ),
-          child:Center(
+          child:const Center(
             child: Text(
               'Video Call Ended',
               style: TextStyle(

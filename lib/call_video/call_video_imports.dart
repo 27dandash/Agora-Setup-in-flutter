@@ -7,3 +7,6 @@ export 'package:flutter_bloc/flutter_bloc.dart';
 export 'package:try_agora/call_video/presentation/controller/call_video_state.dart';
 export 'package:equatable/equatable.dart';
 export 'package:try_agora/call_video/presentation/controller/call_video_cubit.dart';
+export 'package:try_agora/call_video/presentation/components/call_video_action.dart';
+export 'package:try_agora/call_video/presentation/components/local_video_widget.dart';
+export 'package:try_agora/call_video/presentation/components/call_ended.dart';
